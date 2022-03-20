@@ -127,7 +127,7 @@ export const DoctorBox = ({ doctor, isUserLogOn }: Props) => {
                   }
                   key={app.id}
                 >
-                  {app.time}
+                  <span className={styles.time}>{app.time}</span>
                 </li>
               );
             })}

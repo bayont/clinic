@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Raleway:wght@200&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans@1&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap");
 
 .flexImg {
   display: flex;
@@ -25,7 +25,7 @@
 
 .ulGrid {
   font-family: "Open Sans", sans-serif;
-  font-size: 20px;
+  font-size: 1rem;
   padding: 0;
   display: grid;
   list-style-type: none;
@@ -45,6 +45,7 @@
   margin: 5px;
   cursor: not-allowed;
 }
+
 .liAvailable {
   color: white;
   background-color: rgb(75, 124, 231);
@@ -59,6 +60,14 @@
   color: rgb(75, 124, 231);
   border-color: rgb(75, 124, 231);
   background-color: white;
+}
+
+.time {
+  transition: all 0.2s;
+}
+
+.li:hover > .time {
+  font-weight: bold;
 }
 
 .terminyBox {

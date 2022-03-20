@@ -2,6 +2,7 @@ import type {
   GetServerSideProps,
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
+  NextApiRequest,
   NextPage,
 } from "next";
 import Head from "next/head";
@@ -11,9 +12,12 @@ import styles from "../styles/Home.module.css";
 import { DoctorBox } from "../components/DoctorBox";
 import prisma from "../Prisma";
 import { Doctor, Appointment } from "../types";
-import { Prisma } from "@prisma/client";
+import isUserLoggedIn from "./api/isUserLoggedIn";
 
-const Home = ({ isUserLogOn, doctors }: Props) => {
+const Home = ({
+      isUserLogOn,
+      doctors,
+    }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <>
       <Head>
@@ -49,6 +53,7 @@ type Props = {
 export const getServerSideProps: GetServerSideProps = async (
   ctx: GetServerSidePropsContext
 ) => {
+  isUserLoggedIn(ctx.req as NextApiRequest);
   let doctors: Doctor[] = [];
   const isUserLogOn: boolean = false;
   if ((await prisma.doctor.count()) < 1) {

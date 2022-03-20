@@ -2,6 +2,7 @@ import prisma from "../../Prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { NextApiRequest, NextApiResponse } from "next";
 import { User, Session } from "../../types";
+import createSession from "./createSession";
 
 export default async function register(
   req: NextApiRequest,
@@ -9,13 +10,12 @@ export default async function register(
 ) {
   const user = JSON.parse(req.body) as User;
   const userPrisma = await prisma.user.create({ data: user });
-  const session = await prisma.session.create({
-    data: {
-      updated: new Date(),
-      expires: new Date(),
-      uID: userPrisma.id,
-    },
-  });
-
+  const session = await createSession(userPrisma);
+  res.setHeader(
+    "Set-Cookie",
+    `session=${session.id}; path=/; expires=${new Date(
+      session.expires
+    ).toUTCString()}`
+  );
   res.status(200).send(`Dodano użytkownika ${user.login} do bazy danych!`);
 }

@@ -21,7 +21,8 @@ CREATE TABLE "Doctor" (
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
     "workingHoursFrom" TEXT NOT NULL,
-    "workingHoursTo" TEXT NOT NULL
+    "workingHoursTo" TEXT NOT NULL,
+    "imgPath" TEXT NOT NULL DEFAULT ''
 );
 
 -- CreateTable

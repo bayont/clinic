@@ -1,0 +1,94 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@200&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans@1&display=swap");
+
+.flexImg {
+  display: flex;
+  padding: 10px;
+}
+.h1 {
+  padding: 15px;
+  font-family: "Raleway", sans-serif;
+  color: rgb(61, 61, 61);
+  font-size: 2rem;
+}
+.img {
+  transform: scaleX(-1);
+}
+
+.heading {
+  font-family: "Raleway", sans-serif;
+  text-align: center;
+  width: 100%;
+  border-bottom: 2px dotted white;
+  padding: 5px;
+}
+
+.ulGrid {
+  font-family: "Open Sans", sans-serif;
+  font-size: 20px;
+  padding: 0;
+  display: grid;
+  list-style-type: none;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-items: center;
+}
+
+.li {
+  display: block;
+  background-color: gray;
+  color: rgb(51, 51, 51);
+  width: 60%;
+  text-align: center;
+  padding: 10px 15px;
+  border-radius: 2px;
+  border: 4px solid transparent;
+  margin: 5px;
+  cursor: not-allowed;
+}
+.liAvailable {
+  color: white;
+  background-color: rgb(75, 124, 231);
+  border: 4px solid transparent;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.2s ease-out;
+}
+
+.liAvailable:hover,
+.liAvailable:focus {
+  color: rgb(75, 124, 231);
+  border-color: rgb(75, 124, 231);
+  background-color: white;
+}
+
+.terminyBox {
+  color: white;
+  width: 700px;
+  background-color: rgb(65, 84, 109);
+  padding: 15px;
+  border-radius: 20px;
+  height: 500px;
+}
+.colored {
+  color: rgb(9, 85, 224);
+}
+
+@media only screen and (min-width: 1400px) {
+  .reverse {
+    flex-direction: row-reverse;
+  }
+  .textAlignRight {
+    text-align: right;
+  }
+  .img {
+    transform: scaleX(1);
+  }
+  .terminyBox {
+    color: white;
+    width: 500px;
+    background-color: rgb(65, 84, 109);
+    padding: 15px;
+    border-radius: 20px;
+    height: 500px;
+  }
+}

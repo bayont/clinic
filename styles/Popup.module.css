@@ -1,0 +1,44 @@
+.popup {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  left: 0;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.5s;
+}
+.innerBox {
+  background-color: white;
+  padding: 30px;
+  width: 50%;
+  border-radius: 10px;
+  box-shadow: 0px 15px 33px -7px rgba(0, 0, 0, 1);
+}
+
+.buttonYes {
+  background-color: rgb(75, 124, 231);
+  color: white;
+  border: none;
+  padding: 5px 15px;
+  border-radius: 6px;
+  margin: 0 5px;
+  cursor: pointer;
+  font-family: "Open Sans", sans-serif;
+  font-size: 13px;
+}
+
+.buttonNo {
+  background-color: rgb(131, 131, 131);
+  color: white;
+  border: none;
+  padding: 5px 15px;
+  border-radius: 6px;
+  margin: 0 5px;
+  cursor: pointer;
+  font-family: "Open Sans", sans-serif;
+  font-size: 13px;
+}

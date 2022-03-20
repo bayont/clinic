@@ -1,32 +1,35 @@
 type User = {
-  id: string;
+  id?: string;
   login: string;
   password: string;
   sessions?: Session[];
 };
 
 type Session = {
-  id: string;
-  created: string;
-  updated: string;
-  expires: string;
-  user: User;
+  id?: string;
+  created?: string;
+  updated?: string;
+  expires?: string;
+  user?: User;
+  uID: string;
 };
 
 type Doctor = {
-  id: string;
+  id?: string;
   firstName: string;
   lastName: string;
   workingHoursFrom: string;
   workingHoursTo: string;
-  appointments: Appointment[];
+  imgPath?: string;
+  appointments?: Appointment[];
 };
 
 type Appointment = {
-  id: string;
+  id?: string;
   time: string;
-  doctor: Doctor;
+  doctor?: Doctor;
   doctorID: string;
+  reserved?: boolean;
 };
 
 export type { User, Session, Doctor, Appointment };

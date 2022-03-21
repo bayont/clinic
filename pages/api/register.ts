@@ -15,7 +15,7 @@ export default async function register(
     "Set-Cookie",
     `session=${session.id}; path=/; expires=${new Date(
       session.expires
-    ).toUTCString()}`
+    ).toUTCString()}; HttpOnly; samesite=Strict`
   );
   res.status(200).send(`Dodano użytkownika ${user.login} do bazy danych!`);
 }

@@ -14,11 +14,7 @@ import prisma from "../Prisma";
 import { Doctor, Appointment, User } from "../types";
 import isUserLoggedIn from "./api/isUserLoggedIn";
 
-const Home = ({
-  isUserLogOn,
-  doctors,
-  userID,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const Home = ({ isUserLogOn, doctors, userID }: Props) => {
   return (
     <>
       <Head>
@@ -64,14 +60,15 @@ const Home = ({
 };
 
 type Props = {
-  isUserLogOn?: boolean;
+  isUserLogOn: boolean;
   doctors: Doctor[];
-  userID?: string;
+  userID: string;
 };
 
 export const getServerSideProps: GetServerSideProps = async (
   ctx: GetServerSidePropsContext
 ) => {
+  console.log(ctx.req.cookies);
   const resp = await isUserLoggedIn(ctx.req as NextApiRequest);
 
   let userID: string = "";
@@ -148,9 +145,9 @@ export const getServerSideProps: GetServerSideProps = async (
 
   return {
     props: {
-      isUserLogOn: isUserLogOn,
-      doctors: doctors,
-      userID: userID,
+      isUserLogOn,
+      doctors,
+      userID,
     },
   };
 };

@@ -11,13 +11,14 @@ import Link from "next/link";
 import styles from "../styles/Home.module.css";
 import { DoctorBox } from "../components/DoctorBox";
 import prisma from "../Prisma";
-import { Doctor, Appointment } from "../types";
+import { Doctor, Appointment, User } from "../types";
 import isUserLoggedIn from "./api/isUserLoggedIn";
 
 const Home = ({
-      isUserLogOn,
-      doctors,
-    }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  isUserLogOn,
+  doctors,
+  userID,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <>
       <Head>
@@ -28,18 +29,35 @@ const Home = ({
           <div className={styles.logo}>przychodnia</div>
         </div>
         <div className={styles.rightNav}>
-          <div className={styles.button}>
-            <Link href="/login">Zaloguj się</Link>
-          </div>
+          {isUserLogOn && (
+            <div className={styles.button}>
+              <Link href="/logout">Wyloguj się</Link>
+            </div>
+          )}
+          {!isUserLogOn && (
+            <>
+              <div className={styles.button}>
+                <Link href="/login">Zaloguj się</Link>
+              </div>
 
-          <div className={styles.button}>
-            <Link href="/register">Zarejestruj się</Link>
-          </div>
+              <div className={styles.button}>
+                <Link href="/register">Zarejestruj się</Link>
+              </div>
+            </>
+          )}
         </div>
       </nav>
       <div className={styles.flexDoctors}>
-        <DoctorBox doctor={doctors[0]} isUserLogOn={isUserLogOn as boolean} />
-        <DoctorBox doctor={doctors[1]} isUserLogOn={isUserLogOn as boolean} />
+        <DoctorBox
+          doctor={doctors[0]}
+          isUserLogOn={isUserLogOn as boolean}
+          userID={userID}
+        />
+        <DoctorBox
+          doctor={doctors[1]}
+          isUserLogOn={isUserLogOn as boolean}
+          userID={userID}
+        />
       </div>
     </>
   );
@@ -48,14 +66,22 @@ const Home = ({
 type Props = {
   isUserLogOn?: boolean;
   doctors: Doctor[];
+  userID?: string;
 };
 
 export const getServerSideProps: GetServerSideProps = async (
   ctx: GetServerSidePropsContext
 ) => {
-  isUserLoggedIn(ctx.req as NextApiRequest);
+  const resp = await isUserLoggedIn(ctx.req as NextApiRequest);
+
+  let userID: string = "";
+  let isUserLogOn: boolean = false;
+  if (resp != false) {
+    userID = resp as string;
+    isUserLogOn = true;
+  }
+
   let doctors: Doctor[] = [];
-  const isUserLogOn: boolean = false;
   if ((await prisma.doctor.count()) < 1) {
     const paniDoktor: Doctor = {
       firstName: "Agata",
@@ -120,11 +146,11 @@ export const getServerSideProps: GetServerSideProps = async (
     doctors = doctorWithAppointments;
   }
 
-  const props: Props = { isUserLogOn, doctors };
   return {
     props: {
       isUserLogOn: isUserLogOn,
       doctors: doctors,
+      userID: userID,
     },
   };
 };

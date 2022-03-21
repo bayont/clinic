@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { Appointment, Doctor } from "../types";
+import type { Appointment, Doctor, User } from "../types";
 import styles from "../styles/DoctorBox.module.css";
 import { useState } from "react";
 import Link from "next/link";
@@ -8,6 +8,7 @@ import popupStyles from "../styles/popup.module.css";
 type Props = {
   doctor: Doctor;
   isUserLogOn: boolean;
+  userID: string;
 };
 
 type Popup = {
@@ -17,14 +18,20 @@ type Popup = {
   appointment?: Appointment;
 };
 
-const makeAppointment: Function = async (popup) => {
+const makeAppointment: Function = async (popup: Popup, userID: string) => {
   console.log(popup);
+  console.log(userID);
+  const resp = await fetch("/api/appointmentUpdate", {
+    method: "POST",
+    body: JSON.stringify({ appointment: popup.appointment, userID: userID }),
+  });
 };
 
-export const DoctorBox = ({ doctor, isUserLogOn }: Props) => {
+export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
   let classes = `${styles.flexImg}`;
   const [popup, setPopup] = useState({ show: false } as Popup);
   doctor.firstName == "Karol" && (classes += ` ${styles.reverse}`);
+
   return (
     <div>
       {popup.show &&
@@ -45,7 +52,7 @@ export const DoctorBox = ({ doctor, isUserLogOn }: Props) => {
               </p>
               <button
                 onClick={() => {
-                  makeAppointment(popup);
+                  makeAppointment(popup, userID);
                   setPopup({ show: false });
                 }}
                 className={popupStyles.buttonYes}

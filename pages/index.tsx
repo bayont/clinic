@@ -13,8 +13,17 @@ import { DoctorBox } from "../components/DoctorBox";
 import prisma from "../Prisma";
 import { Doctor, Appointment, User } from "../types";
 import isUserLoggedIn from "./api/isUserLoggedIn";
+import { useState } from "react";
+
+const logout = async () => {
+  const r = await fetch("/api/logout", {
+    method: "POST",
+  })
+  console.log(await r.json())
+}
 
 const Home = ({ isUserLogOn, doctors, userID }: Props) => {
+  const [userLoggedIn, setIsUserLogon] = useState(isUserLogOn);
   return (
     <>
       <Head>
@@ -25,12 +34,15 @@ const Home = ({ isUserLogOn, doctors, userID }: Props) => {
           <div className={styles.logo}>przychodnia</div>
         </div>
         <div className={styles.rightNav}>
-          {isUserLogOn && (
+          {userLoggedIn && (
             <div className={styles.button}>
-              <Link href="/logout">Wyloguj się</Link>
+              <div onClick={() => {
+                logout()
+                setIsUserLogon(false)
+              }} >Wyloguj się</div>
             </div>
           )}
-          {!isUserLogOn && (
+          {!userLoggedIn && (
             <>
               <div className={styles.button}>
                 <Link href="/login">Zaloguj się</Link>
@@ -46,12 +58,12 @@ const Home = ({ isUserLogOn, doctors, userID }: Props) => {
       <div className={styles.flexDoctors}>
         <DoctorBox
           doctor={doctors[0]}
-          isUserLogOn={isUserLogOn as boolean}
+          isUserLogOn={userLoggedIn as boolean}
           userID={userID}
         />
         <DoctorBox
           doctor={doctors[1]}
-          isUserLogOn={isUserLogOn as boolean}
+          isUserLogOn={userLoggedIn as boolean}
           userID={userID}
         />
       </div>
@@ -74,7 +86,7 @@ export const getServerSideProps: GetServerSideProps = async (
   let userID: string = "";
   let isUserLogOn: boolean = false;
   if (resp != false) {
-    userID = resp as string;
+    userID = resp.userID as string;
     isUserLogOn = true;
   }
 

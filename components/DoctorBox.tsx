@@ -3,7 +3,7 @@ import type { Appointment, Doctor, User } from "../types";
 import styles from "../styles/DoctorBox.module.css";
 import { useState } from "react";
 import Link from "next/link";
-import popupStyles from "../styles/popup.module.css";
+import popupStyles from "../styles/Popup.module.css";
 
 type Props = {
   doctor: Doctor;

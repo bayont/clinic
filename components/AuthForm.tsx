@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import {
   ChangeEvent,
   ChangeEventHandler,
@@ -14,6 +15,8 @@ type Props = {
 export const AuthForm = ({ register = true }: Props) => {
   const [user, setUser] = useState({ login: "", password: "" } as User);
   const [isTaken, setIsTaken] = useState(false);
+  
+  const router = useRouter()
 
   const registerHandle = async (event: FormEvent) => {
     event.preventDefault();
@@ -22,6 +25,7 @@ export const AuthForm = ({ register = true }: Props) => {
       method: "POST",
       body: JSON.stringify(user),
     });
+    router.push("/");
   };
   const loginHandle = async (event: FormEvent) => {
     event.preventDefault();
@@ -30,6 +34,7 @@ export const AuthForm = ({ register = true }: Props) => {
       method: "POST",
       body: JSON.stringify(user),
     });
+    router.push("/");
   };
 
   const checkUser = async (login: string) => {

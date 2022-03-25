@@ -3,6 +3,7 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { NextApiRequest, NextApiResponse } from "next";
 import { User, Session } from "../../types";
 import createSession from "./createSession";
+import { useRouter } from "next/router";
 
 export default async function register(
   req: NextApiRequest,
@@ -17,5 +18,7 @@ export default async function register(
       session.expires
     ).toUTCString()}; HttpOnly; samesite=Strict`
   );
-  res.status(200).send(`Dodano użytkownika ${user.login} do bazy danych!`);
+  if(req.headers.origin != null)
+  res.setHeader("Location", req.headers.origin);
+  res.status(201).send(`Dodano użytkownika ${user.login} do bazy danych!`);
 }

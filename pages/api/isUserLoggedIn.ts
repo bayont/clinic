@@ -2,6 +2,7 @@ import { NextApiRequest } from "next";
 import prisma from "../../Prisma";
 import { Session, User } from "../../types";
 
+
 type Return = {
   userID?: string;
 };
@@ -13,6 +14,8 @@ export default async function isUserLoggedIn(req: NextApiRequest) {
       id: sessionID,
     },
   });
+  if(session == null)
+  return false
   if (
     new Date(session.expires as string).getTime() - new Date().getTime() >
     0
@@ -21,5 +24,5 @@ export default async function isUserLoggedIn(req: NextApiRequest) {
       userID: session.uID,
     };
     //return (session as Session).user as User;
-  } else return {};
+  } else return false;
 }

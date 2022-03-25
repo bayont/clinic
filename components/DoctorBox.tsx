@@ -96,11 +96,7 @@ export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
 
       <div>
         <h1
-          className={
-            (styles.h1 +
-              " " +
-              (doctor.firstName == "Karol" && styles.textAlignRight)) as string
-          }
+          className={`${styles.h1} ${doctor.firstName == 'Karol' ? styles.textAlignRight : ''}`}
         >
           dr hab.{" "}
           <span className={styles.colored}>
@@ -111,7 +107,7 @@ export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
       <div className={classes}>
         <div>
           <Image
-            className={(doctor.firstName == "Karol" && styles.img) as string}
+            className={`${doctor.firstName == 'Karol' ? styles.img : ''}`}
             width={400}
             height={400}
             src={doctor.imgPath as string}

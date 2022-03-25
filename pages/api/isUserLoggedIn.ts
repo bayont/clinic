@@ -20,9 +20,17 @@ export default async function isUserLoggedIn(req: NextApiRequest) {
     new Date(session.expires as string).getTime() - new Date().getTime() >
     0
   ) {
+    
     return {
       userID: session.uID,
     };
-    //return (session as Session).user as User;
-  } else return false;
+  } else{
+    
+    await prisma.session.delete({
+      where: {
+        id: sessionID
+      }
+    })
+    return false;
+  } 
 }

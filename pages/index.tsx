@@ -14,32 +14,44 @@ import prisma from "../Prisma";
 import { Doctor, Appointment, User } from "../types";
 import isUserLoggedIn from "./api/isUserLoggedIn";
 import { useState } from "react";
+import { PopupAuth } from "../components/PopupAuth";
 
-const logout = async () => {
-  const r = await fetch("/api/logout", {
-    method: "POST",
-  })
-  console.log(await r.json())
-}
-
-const Home = ({ isUserLogOn, doctors, userID }: Props) => {
+const Home = ({ isUserLogOn, doctors, userID, auth }: Props) => {
   const [userLoggedIn, setIsUserLogon] = useState(isUserLogOn);
+  const [authParam, setAuthParam] = useState(auth);
+  const logout = async () => {
+    const r = await fetch("/api/logout", {
+      method: "POST",
+    });
+    console.log(await r.json());
+  };
   return (
     <>
       <Head>
         <title>Przychodnia</title>
       </Head>
+      <div className={styles.popUpAuth}>
+        {authParam && (
+          <>
+            <PopupAuth auth={authParam} />{" "}
+          </>
+        )}
+      </div>
       <nav className={styles.flex}>
         <div className={styles.leftNav}>
           <div className={styles.logo}>przychodnia</div>
         </div>
         <div className={styles.rightNav}>
           {userLoggedIn && (
-            <div className={styles.button}>
-              <div onClick={() => {
-                logout()
-                setIsUserLogon(false)
-              }} >Wyloguj się</div>
+            <div className={`${styles.button}`}>
+              <div
+                onClick={() => {
+                  logout();
+                  setIsUserLogon(false);
+                }}
+              >
+                Wyloguj się
+              </div>
             </div>
           )}
           {!userLoggedIn && (
@@ -75,12 +87,13 @@ type Props = {
   isUserLogOn: boolean;
   doctors: Doctor[];
   userID: string;
+  auth?: string;
 };
 
 export const getServerSideProps: GetServerSideProps = async (
   ctx: GetServerSidePropsContext
 ) => {
-  console.log(ctx.req.cookies);
+  const auth: string | null = ctx.query.auth as string | null;
   const resp = await isUserLoggedIn(ctx.req as NextApiRequest);
 
   let userID: string = "";
@@ -160,6 +173,7 @@ export const getServerSideProps: GetServerSideProps = async (
       isUserLogOn,
       doctors,
       userID,
+      auth,
     },
   };
 };

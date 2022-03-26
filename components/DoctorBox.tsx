@@ -8,7 +8,7 @@ import popupStyles from "../styles/Popup.module.css";
 type Props = {
   doctor: Doctor;
   isUserLogOn: boolean;
-  userID: string;
+  userID?: string;
 };
 
 type Popup = {
@@ -19,8 +19,6 @@ type Popup = {
 };
 
 const makeAppointment: Function = async (popup: Popup, userID: string) => {
-  console.log(popup);
-  console.log(userID);
   const resp = await fetch("/api/appointmentUpdate", {
     method: "POST",
     body: JSON.stringify({ appointment: popup.appointment, userID: userID }),
@@ -30,6 +28,18 @@ const makeAppointment: Function = async (popup: Popup, userID: string) => {
 export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
   let classes = `${styles.flexImg}`;
   const [popup, setPopup] = useState({ show: false } as Popup);
+  const [userAppointments, setUserAppointments] = useState<Appointment | null>(
+    null
+  );
+  const checkIfUserHasAlreadyAppointment = async () => {
+    const resp = await fetch("/api/getUserAppointments", {
+      method: "POST",
+      body: userID,
+    });
+    const r: Appointment | null = await resp.json();
+    console.log(r);
+    setUserAppointments(r);
+  };
   doctor.firstName == "Karol" && (classes += ` ${styles.reverse}`);
 
   return (
@@ -40,6 +50,26 @@ export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
             <div className={popupStyles.innerBox}>
               <h2>Potwierdzenie rejestracji do lekarza</h2>
               <hr />
+              {userAppointments != null ? (
+                <>
+                  <p>Masz już umówioną wizytę.</p>
+                  <p>
+                    u Doktora:{" "}
+                    <b>
+                      {userAppointments.doctor?.firstName}{" "}
+                      {userAppointments.doctor?.lastName}
+                    </b>
+                  </p>
+                  <p>
+                    O godzinie: <b>{userAppointments.time}</b>
+                  </p>
+                  <p>Czy chcesz zmienić swoja wizytę na: </p>
+                </>
+              ) : (
+                <>
+                  <p>Czy chcesz umówić się na wizytę:</p>
+                </>
+              )}
               <p>Czy chcesz umówić się na wizytę:</p>
               <p>
                 Lekarz:{" "}
@@ -96,7 +126,9 @@ export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
 
       <div>
         <h1
-          className={`${styles.h1} ${doctor.firstName == 'Karol' ? styles.textAlignRight : ''}`}
+          className={`${styles.h1} ${
+            doctor.firstName == "Karol" ? styles.textAlignRight : ""
+          }`}
         >
           dr hab.{" "}
           <span className={styles.colored}>
@@ -107,7 +139,7 @@ export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
       <div className={classes}>
         <div>
           <Image
-            className={`${doctor.firstName == 'Karol' ? styles.img : ''}`}
+            className={`${doctor.firstName == "Karol" ? styles.img : ""}`}
             width={400}
             height={400}
             src={doctor.imgPath as string}
@@ -121,6 +153,7 @@ export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
               return (
                 <li
                   onClick={(e) => {
+                    checkIfUserHasAlreadyAppointment();
                     setPopup({ show: true, doctor: doctor, appointment: app });
                   }}
                   className={

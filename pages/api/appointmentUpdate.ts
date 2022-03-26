@@ -8,11 +8,20 @@ export default async function appointmentUpdate(
 ) {
   const body = JSON.parse(req.body);
   const { appointment, userID } = body;
+  await prisma.appointment.updateMany({
+    where: {
+      userID,
+    },
+    data: {
+      userID: null,
+      reserved: false,
+    },
+  });
   await prisma.appointment.update({
     where: { id: appointment.id },
     data: {
       userID: userID,
-      reserverd: true,
+      reserved: true,
     },
   });
   res.status(200).send("OK");

@@ -33,7 +33,7 @@ const Home = ({ isUserLogOn, doctors, userID, auth }: Props) => {
       <div className={styles.popUpAuth}>
         {authParam && (
           <>
-            <PopupAuth auth={authParam} />{" "}
+            <PopupAuth auth={authParam} />
           </>
         )}
       </div>
@@ -94,6 +94,7 @@ export const getServerSideProps: GetServerSideProps = async (
   ctx: GetServerSidePropsContext
 ) => {
   const auth: string | null = ctx.query.auth as string | null;
+
   const resp = await isUserLoggedIn(ctx.req as NextApiRequest);
 
   let userID: string = "";
@@ -173,7 +174,7 @@ export const getServerSideProps: GetServerSideProps = async (
       isUserLogOn,
       doctors,
       userID,
-      auth,
+      auth: auth || null,
     },
   };
 };

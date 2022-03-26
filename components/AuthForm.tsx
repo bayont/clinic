@@ -26,7 +26,7 @@ export const AuthForm = ({ register = true }: Props) => {
       method: "POST",
       body: JSON.stringify(user),
     });
-    router.push("/", { query: { auth: "register" } });
+    router.push("/?auth=register", "/");
   };
   const loginHandle = async (event: FormEvent) => {
     setAuthFailure(false);
@@ -38,7 +38,7 @@ export const AuthForm = ({ register = true }: Props) => {
     });
     const resp = await res.json();
     if (resp) {
-      router.push("/", { query: { auth: "login" } });
+      router.push("/?auth=login", "/");
       console.log();
     } else {
       setAuthFailure(true);

@@ -44,6 +44,7 @@
   border: 4px solid transparent;
   margin: 5px;
   cursor: not-allowed;
+  transition: all 0.2s ease-out;
 }
 
 .liAvailable {
@@ -52,7 +53,6 @@
   border: 4px solid transparent;
   cursor: pointer;
   border-radius: 10px;
-  transition: all 0.2s ease-out;
 }
 
 .liAvailable:hover,
@@ -60,6 +60,33 @@
   color: rgb(75, 124, 231);
   border-color: rgb(75, 124, 231);
   background-color: white;
+}
+
+.unavailable {
+  cursor: not-allowed;
+  background-color: #333;
+  color: #aaa;
+  border-color: #333;
+}
+
+.unavailable:hover,
+.unavailable:focus {
+  background-color: #333;
+  color: #aaa;
+  border-color: #333;
+}
+
+.ownAppointment {
+  cursor: pointer;
+  background-color: rgb(55, 175, 55);
+  color: rgb(247, 242, 170);
+}
+
+.ownAppointment:hover,
+.ownAppointment:focus {
+  background-color: rgb(226, 80, 80);
+  border-color: rgb(226, 80, 80);
+  color: rgb(250, 200, 200);
 }
 
 .time {

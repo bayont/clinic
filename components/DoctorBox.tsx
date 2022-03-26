@@ -18,6 +18,11 @@ type Popup = {
   appointment?: Appointment;
 };
 
+type RestAppointmentRes = {
+  appointment: Appointment;
+  doctor: Doctor;
+};
+
 const makeAppointment: Function = async (popup: Popup, userID: string) => {
   const resp = await fetch("/api/appointmentUpdate", {
     method: "POST",
@@ -28,16 +33,14 @@ const makeAppointment: Function = async (popup: Popup, userID: string) => {
 export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
   let classes = `${styles.flexImg}`;
   const [popup, setPopup] = useState({ show: false } as Popup);
-  const [userAppointments, setUserAppointments] = useState<Appointment | null>(
-    null
-  );
+  const [userAppointments, setUserAppointments] =
+    useState<RestAppointmentRes | null>(null);
   const checkIfUserHasAlreadyAppointment = async () => {
     const resp = await fetch("/api/getUserAppointments", {
       method: "POST",
       body: userID,
     });
-    const r: Appointment | null = await resp.json();
-    console.log(r);
+    const r: RestAppointmentRes | null = await resp.json();
     setUserAppointments(r);
   };
   doctor.firstName == "Karol" && (classes += ` ${styles.reverse}`);
@@ -47,22 +50,26 @@ export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
       {popup.show &&
         (isUserLogOn ? (
           <div className={popupStyles.popup}>
-            <div className={popupStyles.innerBox}>
+            <div
+              className={popupStyles.innerBox}
+              onClick={checkIfUserHasAlreadyAppointment}
+            >
               <h2>Potwierdzenie rejestracji do lekarza</h2>
               <hr />
               {userAppointments != null ? (
                 <>
                   <p>Masz już umówioną wizytę.</p>
                   <p>
-                    u Doktora:{" "}
+                    u doktora:{" "}
                     <b>
                       {userAppointments.doctor?.firstName}{" "}
                       {userAppointments.doctor?.lastName}
                     </b>
                   </p>
                   <p>
-                    O godzinie: <b>{userAppointments.time}</b>
+                    O godzinie: <b>{userAppointments.appointment.time}</b>
                   </p>
+                  <hr />
                   <p>Czy chcesz zmienić swoja wizytę na: </p>
                 </>
               ) : (
@@ -70,7 +77,6 @@ export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
                   <p>Czy chcesz umówić się na wizytę:</p>
                 </>
               )}
-              <p>Czy chcesz umówić się na wizytę:</p>
               <p>
                 Lekarz:{" "}
                 <b>
@@ -150,17 +156,26 @@ export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
           <div className={styles.heading}>Terminarz</div>
           <ul className={styles.ulGrid}>
             {doctor.appointments?.map((app) => {
+              let classes = `${styles.li} ${styles.liAvailable}`;
+              if (app.userID == userID) {
+                classes += ` ${styles.ownAppointment}`;
+              } else if (app.reserved) {
+                classes += ` ${styles.unavailable}`;
+              }
+
               return (
                 <li
                   onClick={(e) => {
-                    checkIfUserHasAlreadyAppointment();
-                    setPopup({ show: true, doctor: doctor, appointment: app });
+                    if (!app.reserved && app.userID != userID) {
+                      checkIfUserHasAlreadyAppointment();
+                      setPopup({
+                        show: true,
+                        doctor: doctor,
+                        appointment: app,
+                      });
+                    }
                   }}
-                  className={
-                    app.reserved
-                      ? `${styles.li}`
-                      : `${styles.li} ${styles.liAvailable}`
-                  }
+                  className={classes}
                   key={app.id}
                 >
                   <span className={styles.time}>{app.time}</span>

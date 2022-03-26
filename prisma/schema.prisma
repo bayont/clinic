@@ -41,7 +41,7 @@ model Appointment {
   time        String
   doctor      Doctor @relation(fields: [doctorID], references: [id])
   doctorID    String
-  reserverd   Boolean @default(false)
-  reserverdBy User? @relation(fields: [userID], references: [id])
+  reserved   Boolean @default(false)
+  reservedBy User? @relation(fields: [userID], references: [id])
   userID      String?
 }

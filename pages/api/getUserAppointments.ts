@@ -3,8 +3,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { Appointment, User } from "../../types";
 
 const getUserAppointments = async (
-  res: NextApiResponse,
-  req: NextApiRequest
+  req: NextApiRequest,
+  res: NextApiResponse
 ) => {
   const userID: string | null = req.body;
   let appointment;
@@ -15,6 +15,14 @@ const getUserAppointments = async (
       },
     });
   } else appointment = null;
-  if (appointment != null) res.status(200).json(appointment);
-  else res.status(200).json(null);
+  if (appointment != null) {
+    const doctor = await prisma.doctor.findUnique({
+      where: {
+        id: appointment.doctorID,
+      },
+    });
+    res.status(200).json({ appointment, doctor });
+  } else res.status(200).send("null");
 };
+
+export default getUserAppointments;

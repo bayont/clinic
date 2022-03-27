@@ -5,7 +5,6 @@ type Props = {
 };
 
 export const PopupAuth = ({ auth }: Props) => {
-  console.log(auth);
   if (auth == "login")
     return (
       <>
@@ -24,4 +23,5 @@ export const PopupAuth = ({ auth }: Props) => {
         <div className={styles.popup}>Zarejestrowano!</div>
       </>
     );
+  return <></>;
 };

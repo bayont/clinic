@@ -7,7 +7,8 @@ export default async function appointmentUpdate(
   res: NextApiResponse
 ) {
   const body = JSON.parse(req.body);
-  const { appointment, userID } = body;
+  const { appointment, userID, del } = body;
+
   await prisma.appointment.updateMany({
     where: {
       userID,
@@ -17,12 +18,15 @@ export default async function appointmentUpdate(
       reserved: false,
     },
   });
-  await prisma.appointment.update({
-    where: { id: appointment.id },
-    data: {
-      userID: userID,
-      reserved: true,
-    },
-  });
+  if (!del) {
+    const app = await prisma.appointment.update({
+      where: { id: appointment.id },
+      data: {
+        userID: userID,
+        reserved: true,
+      },
+    });
+  }
+
   res.status(200).send("OK");
 }

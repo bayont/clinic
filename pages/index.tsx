@@ -15,15 +15,24 @@ import { Doctor, Appointment, User } from "../types";
 import isUserLoggedIn from "./api/isUserLoggedIn";
 import { useState } from "react";
 import { PopupAuth } from "../components/PopupAuth";
+import getUserAppointments from "./api/getUserAppointments";
+import { useRouter } from "next/router";
 
-const Home = ({ isUserLogOn, doctors, userID, auth }: Props) => {
+const Home = ({
+  isUserLogOn,
+  doctors,
+  userID,
+  auth,
+  userAppointments,
+}: Props) => {
   const [userLoggedIn, setIsUserLogon] = useState(isUserLogOn);
   const [authParam, setAuthParam] = useState(auth);
+  const router = useRouter();
   const logout = async () => {
     const r = await fetch("/api/logout", {
       method: "POST",
     });
-    console.log(await r.json());
+    router.push("/", "/", { scroll: false });
   };
   return (
     <>
@@ -72,28 +81,35 @@ const Home = ({ isUserLogOn, doctors, userID, auth }: Props) => {
           doctor={doctors[0]}
           isUserLogOn={userLoggedIn as boolean}
           userID={userID}
+          userAppointments={userAppointments}
         />
         <DoctorBox
           doctor={doctors[1]}
           isUserLogOn={userLoggedIn as boolean}
           userID={userID}
+          userAppointments={userAppointments}
         />
       </div>
     </>
   );
 };
-
+type RestAppointmentRes = {
+  appointment: Appointment;
+  doctor: Doctor;
+};
 type Props = {
   isUserLogOn: boolean;
   doctors: Doctor[];
   userID: string;
   auth?: string;
+  userAppointments?: RestAppointmentRes;
 };
 
 export const getServerSideProps: GetServerSideProps = async (
   ctx: GetServerSidePropsContext
 ) => {
   const auth: string | null = ctx.query.auth as string | null;
+  console.log(ctx.query);
 
   const resp = await isUserLoggedIn(ctx.req as NextApiRequest);
 
@@ -102,6 +118,23 @@ export const getServerSideProps: GetServerSideProps = async (
   if (resp != false) {
     userID = resp.userID as string;
     isUserLogOn = true;
+  }
+  let userAppointments = null;
+  let appointment;
+  if (userID != null) {
+    appointment = await prisma.appointment.findFirst({
+      where: {
+        userID,
+      },
+    });
+  } else appointment = null;
+  if (appointment != null) {
+    const doctor = await prisma.doctor.findUnique({
+      where: {
+        id: appointment.doctorID,
+      },
+    });
+    userAppointments = { appointment, doctor };
   }
 
   let doctors: Doctor[] = [];
@@ -175,6 +208,7 @@ export const getServerSideProps: GetServerSideProps = async (
       doctors,
       userID,
       auth: auth || null,
+      userAppointments,
     },
   };
 };

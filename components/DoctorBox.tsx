@@ -4,16 +4,18 @@ import styles from "../styles/DoctorBox.module.css";
 import { useState } from "react";
 import Link from "next/link";
 import popupStyles from "../styles/Popup.module.css";
+import { useRouter } from "next/router";
 
 type Props = {
   doctor: Doctor;
   isUserLogOn: boolean;
   userID?: string;
+  userAppointments: RestAppointmentRes | null;
 };
 
 type Popup = {
   show: boolean;
-  loginMsg?: boolean;
+  loginMsg?: string;
   doctor?: Doctor;
   appointment?: Appointment;
 };
@@ -23,26 +25,31 @@ type RestAppointmentRes = {
   doctor: Doctor;
 };
 
-const makeAppointment: Function = async (popup: Popup, userID: string) => {
-  const resp = await fetch("/api/appointmentUpdate", {
-    method: "POST",
-    body: JSON.stringify({ appointment: popup.appointment, userID: userID }),
-  });
-};
-
-export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
+export const DoctorBox = ({
+  doctor,
+  isUserLogOn,
+  userID,
+  userAppointments,
+}: Props) => {
   let classes = `${styles.flexImg}`;
   const [popup, setPopup] = useState({ show: false } as Popup);
-  const [userAppointments, setUserAppointments] =
-    useState<RestAppointmentRes | null>(null);
-  const checkIfUserHasAlreadyAppointment = async () => {
-    const resp = await fetch("/api/getUserAppointments", {
+  const router = useRouter();
+
+  const makeAppointment: Function = async (popup: Popup, userID: string) => {
+    let del = false;
+    if (popup.loginMsg == "own") del = true;
+    const resp = await fetch("/api/appointmentUpdate", {
       method: "POST",
-      body: userID,
+      body: JSON.stringify({
+        appointment: popup.appointment,
+        userID: userID,
+        del,
+      }),
     });
-    const r: RestAppointmentRes | null = await resp.json();
-    setUserAppointments(r);
+
+    router.push("/", "", { scroll: false });
   };
+
   doctor.firstName == "Karol" && (classes += ` ${styles.reverse}`);
 
   return (
@@ -50,13 +57,11 @@ export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
       {popup.show &&
         (isUserLogOn ? (
           <div className={popupStyles.popup}>
-            <div
-              className={popupStyles.innerBox}
-              onClick={checkIfUserHasAlreadyAppointment}
-            >
+            <div className={popupStyles.innerBox}>
               <h2>Potwierdzenie rejestracji do lekarza</h2>
               <hr />
-              {userAppointments != null ? (
+              {userAppointments != null &&
+              userAppointments.appointment.id != popup.appointment?.id ? (
                 <>
                   <p>Masz już umówioną wizytę.</p>
                   <p>
@@ -71,6 +76,10 @@ export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
                   </p>
                   <hr />
                   <p>Czy chcesz zmienić swoja wizytę na: </p>
+                </>
+              ) : popup.loginMsg == "own" ? (
+                <>
+                  <p>Czy chcesz odwołać wizytę?</p>
                 </>
               ) : (
                 <>
@@ -106,7 +115,10 @@ export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
             </div>
           </div>
         ) : (
-          <div className={popupStyles.popup}>
+          <div
+            className={popupStyles.popup}
+            onClick={() => setPopup({ ...popup, show: false })}
+          >
             <div className={popupStyles.innerBox}>
               <h2>Jesteś niezalogowany!</h2>
               <hr />
@@ -166,13 +178,20 @@ export const DoctorBox = ({ doctor, isUserLogOn, userID }: Props) => {
               return (
                 <li
                   onClick={(e) => {
-                    if (!app.reserved && app.userID != userID) {
-                      checkIfUserHasAlreadyAppointment();
-                      setPopup({
-                        show: true,
-                        doctor: doctor,
-                        appointment: app,
-                      });
+                    if (!app.reserved || app.userID == userID) {
+                      if (app.userID == userID)
+                        setPopup({
+                          show: true,
+                          doctor,
+                          loginMsg: "own",
+                          appointment: app,
+                        });
+                      else
+                        setPopup({
+                          show: true,
+                          doctor,
+                          appointment: app,
+                        });
                     }
                   }}
                   className={classes}

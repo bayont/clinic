@@ -36,17 +36,14 @@ const Home = ({
     router.push("/", "/", { scroll: false });
   };
   useEffect(() => {
-    const func = async () => {
-      setUser(await getUser());
-    };
-    func();
+    getUser();
   }, []);
   const getUser = async () => {
     const r = await fetch(`/api/users/${userID}`, {
       method: "GET",
     });
     const userRes: User = await r.json();
-    return userRes;
+    setUser(userRes);
   };
   return (
     <>
@@ -103,13 +100,13 @@ const Home = ({
           doctor={doctors[0]}
           isUserLogOn={userLoggedIn as boolean}
           userID={userID}
-          userAppointments={userAppointments}
+          userAppointments={userAppointments as RestAppointmentRes}
         />
         <DoctorBox
           doctor={doctors[1]}
           isUserLogOn={userLoggedIn as boolean}
           userID={userID}
-          userAppointments={userAppointments}
+          userAppointments={userAppointments as RestAppointmentRes}
         />
       </div>
     </>

@@ -30,7 +30,7 @@ type Appointment = {
   doctor?: Doctor;
   doctorID: string;
   reserved?: boolean;
-  userID?: string;
+  userID?: string | null;
 };
 
 export type { User, Session, Doctor, Appointment };

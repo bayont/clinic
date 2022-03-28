@@ -63,7 +63,7 @@
   color: rgb(50, 149, 241);
 }
 .label {
-  display: block;
+  display: none;
   opacity: 0;
   font-size: 15px;
   position: absolute;

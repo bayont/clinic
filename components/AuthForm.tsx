@@ -7,6 +7,9 @@ import {
   useState,
 } from "react";
 import type { User } from "../types";
+import styles from "../styles/AuthForm.module.css";
+import classNames from "classnames";
+import { motion, AnimatePresence } from "framer-motion";
 
 type Props = {
   register?: boolean;
@@ -57,58 +60,98 @@ export const AuthForm = ({ register = true }: Props) => {
 
   return (
     <>
-      <h1>{(register && "Rejestracja") || "Logowanie"}</h1>
-      <form onSubmit={(register && registerHandle) || loginHandle}>
-        <div>
-          <label htmlFor="login">Login: </label>
-          <input
-            type="text"
-            name="login"
-            onChange={(e) => {
-              if (register) {
-                checkUser(e.target.value);
-              }
-              setUser({
-                login: e.target.value,
-                password: user.password,
-              } as User);
-            }}
-          />
-          {register && isTaken ? (
-            <>
-              <div className="error">Użytkownik o tej nazwie już istnieje.</div>
-            </>
-          ) : (
-            ""
-          )}
+      <div className={styles.container}>
+        <div className={styles.wrapper}>
+          <motion.div className={styles.innerContainer} layout>
+            <form
+              className={styles.form}
+              onSubmit={(register && registerHandle) || loginHandle}
+            >
+              <motion.div className={styles.inputContainer}>
+                {" "}
+                <label className={styles.label} htmlFor="login">
+                  Nazwa użytkownika{" "}
+                </label>
+                <input
+                  placeholder="Nazwa użytkownika"
+                  className={classNames(styles.input)}
+                  type="text"
+                  name="login"
+                  onChange={(e) => {
+                    if (register) {
+                      checkUser(e.target.value);
+                    }
+                    setUser({
+                      login: e.target.value,
+                      password: user.password,
+                    } as User);
+                  }}
+                />
+                <AnimatePresence>
+                  {register && isTaken ? (
+                    <>
+                      <motion.div
+                        layout
+                        className={styles.error}
+                        initial={{ y: 50, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: 50, opacity: 0 }}
+                        transition={{ type: "spring" }}
+                      >
+                        Użytkownik o tej nazwie już istnieje.
+                      </motion.div>
+                    </>
+                  ) : (
+                    ""
+                  )}
+                </AnimatePresence>
+              </motion.div>
+              <div className={styles.inputContainer}>
+                <label className={styles.label} htmlFor="password">
+                  Hasło{" "}
+                </label>
+                <input
+                  placeholder="Hasło"
+                  className={classNames(styles.input)}
+                  type="password"
+                  name="password"
+                  onChange={async (e) => {
+                    setUser({
+                      login: user.login,
+                      password: e.target.value,
+                    } as User);
+                  }}
+                />
+              </div>
+              <div className={styles.submitParent}>
+                <input
+                  className={styles.submit}
+                  type="submit"
+                  value={(register && "Zarejestruj się") || "Zaloguj się"}
+                />
+              </div>
+              <AnimatePresence>
+                {register == false && authFailure ? (
+                  <>
+                    <motion.div
+                      layout
+                      className={styles.error}
+                      initial={{ y: 50, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: 50, opacity: 0 }}
+                      transition={{ type: "spring" }}
+                    >
+                      Użytkownik lub hasło niepoprawne!
+                    </motion.div>
+                  </>
+                ) : (
+                  ""
+                )}
+              </AnimatePresence>
+            </form>
+          </motion.div>
         </div>
-        <div>
-          <label htmlFor="password">Hasło: </label>
-          <input
-            type="password"
-            name="password"
-            onChange={async (e) => {
-              setUser({
-                login: user.login,
-                password: e.target.value,
-              } as User);
-            }}
-          />
-        </div>
-        <div>
-          <input
-            type="submit"
-            value={(register && "Zarejestruj się") || "Zaloguj się"}
-          />
-        </div>
-        {register == false && authFailure ? (
-          <>
-            <div className="error">Użytkownik lub hasło niepoprawne!</div>
-          </>
-        ) : (
-          ""
-        )}
-      </form>
+      </div>
     </>
   );
 };

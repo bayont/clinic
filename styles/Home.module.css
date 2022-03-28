@@ -12,6 +12,7 @@
 
 .leftNav {
   display: flex;
+  flex-grow: 1;
 }
 
 @media only screen and (min-width: 1400px) {
@@ -52,6 +53,7 @@
 .rightNav {
   display: flex;
   justify-content: right;
+  flex-grow: 1;
 }
 
 .button {
@@ -67,10 +69,18 @@
 .userLogin {
   color: rgb(50, 149, 241);
   font-weight: bold;
+  margin-left: 5px;
+}
+
+.loggedAs {
+  align-self: center;
+  flex-grow: 2;
 }
 
 .flexLogin {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 200px;
+  text-align: left;
 }

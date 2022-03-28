@@ -68,7 +68,7 @@ const Home = ({
           {userLoggedIn && (
             <div className={styles.flexLogin}>
               Zalogowano jako:{" "}
-              <span className={styles.userLogin}>{user?.login}</span>
+              <span className={styles.userLogin}> {user?.login}</span>
             </div>
           )}
         </div>

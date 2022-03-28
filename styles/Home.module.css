@@ -52,7 +52,6 @@
 .rightNav {
   display: flex;
   justify-content: right;
-  width: 40%;
 }
 
 .button {
@@ -63,4 +62,15 @@
 
 .button:hover {
   color: rgb(50, 149, 241);
+}
+
+.userLogin {
+  color: rgb(50, 149, 241);
+  font-weight: bold;
+}
+
+.flexLogin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

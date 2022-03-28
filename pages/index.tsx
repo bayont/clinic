@@ -13,7 +13,7 @@ import { DoctorBox } from "../components/DoctorBox";
 import prisma from "../Prisma";
 import { Doctor, Appointment, User } from "../types";
 import isUserLoggedIn from "./api/isUserLoggedIn";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PopupAuth } from "../components/PopupAuth";
 import getUserAppointments from "./api/getUserAppointments";
 import { useRouter } from "next/router";
@@ -27,12 +27,26 @@ const Home = ({
 }: Props) => {
   const [userLoggedIn, setIsUserLogon] = useState(isUserLogOn);
   const [authParam, setAuthParam] = useState(auth);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const logout = async () => {
     const r = await fetch("/api/logout", {
       method: "POST",
     });
     router.push("/", "/", { scroll: false });
+  };
+  useEffect(() => {
+    const func = async () => {
+      setUser(await getUser());
+    };
+    func();
+  }, []);
+  const getUser = async () => {
+    const r = await fetch(`/api/users/${userID}`, {
+      method: "GET",
+    });
+    const userRes: User = await r.json();
+    return userRes;
   };
   return (
     <>
@@ -49,6 +63,14 @@ const Home = ({
       <nav className={styles.flex}>
         <div className={styles.leftNav}>
           <div className={styles.logo}>przychodnia</div>
+        </div>
+        <div className={styles.loggedAs}>
+          {userLoggedIn && (
+            <div className={styles.flexLogin}>
+              Zalogowano jako:{" "}
+              <span className={styles.userLogin}>{user?.login}</span>
+            </div>
+          )}
         </div>
         <div className={styles.rightNav}>
           {userLoggedIn && (

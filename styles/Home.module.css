@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@200&display=swap");
+
 .container {
   padding: 0 2rem;
 }
@@ -20,7 +22,6 @@
   }
 }
 
-@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300&display=swap");
 .logo {
   text-transform: uppercase;
   letter-spacing: 3px;
@@ -30,7 +31,7 @@
   padding: 10px 20px;
   border-radius: 20px;
   font-weight: bold;
-  font-family: "Comfortaa", cursive;
+  font-family: "Raleway", cursive;
   user-select: none;
   animation: logo-in 0.8s ease-in-out 0.5s;
 }

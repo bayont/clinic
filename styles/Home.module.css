@@ -85,3 +85,22 @@
   min-width: 200px;
   text-align: left;
 }
+
+@media only screen and (max-width: 500px) {
+  .flex {
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 10px;
+  }
+  .leftNav {
+    text-align: center;
+    display: block;
+    justify-content: center;
+  }
+  .rightNav {
+    justify-content: center;
+  }
+  .logo {
+    margin: 10px;
+  }
+}

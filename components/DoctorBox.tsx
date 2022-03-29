@@ -162,7 +162,6 @@ export const DoctorBox = ({
             height={400}
             src={doctor.imgPath as string}
           ></Image>
-          <div></div>
         </div>
         <div className={styles.terminyBox}>
           <div className={styles.heading}>Terminarz</div>

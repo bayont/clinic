@@ -3,16 +3,15 @@
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["mongoDb"]
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DB_PATH")
+  provider = "sqlite"
+  url      = "file:./przychodnia.db"
 }
 
 model User {
-  id          String @id @default(uuid()) @map("_id")
+  id          String @id @default(uuid())
   login       String @unique
   password    String
   sessions    Session[]
@@ -20,7 +19,7 @@ model User {
 }
 
 model Session {
-  id        String    @id @default(uuid()) @map("_id")
+  id        String    @id @default(uuid())
   created   DateTime  @default(now())
   updated   DateTime?
   expires   DateTime
@@ -29,7 +28,7 @@ model Session {
 }
 
 model Doctor {
-  id                String    @id @default(uuid()) @map("_id")
+  id                String    @id @default(uuid())
   firstName         String
   lastName          String
   workingHoursFrom  String
@@ -38,7 +37,7 @@ model Doctor {
   appointments      Appointment[]
 }
 model Appointment {
-  id          String @id @default(uuid()) @map("_id") 
+  id          String @id @default(uuid())
   time        String
   doctor      Doctor @relation(fields: [doctorID], references: [id])
   doctorID    String

@@ -42,7 +42,6 @@ export const AuthForm = ({ register = true }: Props) => {
     const resp = await res.json();
     if (resp) {
       router.push("/?auth=login", "/");
-      console.log();
     } else {
       setAuthFailure(true);
     }
